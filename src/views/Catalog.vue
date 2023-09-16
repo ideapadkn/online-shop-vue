@@ -1,18 +1,3 @@
-<script setup>
-import { onMounted, computed } from "vue";
-import { productsStore } from "@/stores/products";
-import { useRouter, useRoute } from "vue-router";
-
-const router = useRouter();
-const route = useRoute();
-const store = productsStore();
-
-onMounted(async () => {
-  await store.fetchProductsFromDB();
-  console.log(store.products);
-});
-</script>
-
 <script>
 import { defineComponent } from "vue";
 export default defineComponent({
@@ -20,10 +5,28 @@ export default defineComponent({
 });
 </script>
 
+<script setup>
+import { onMounted } from "vue";
+import { productsStore } from "@/stores/products";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const store = productsStore();
+
+onMounted(async () => {
+  await store.fetchProductsFromDB();
+  console.log(store.products);
+});
+
+const goToProductDetail = (id) => {
+  router.push({ name: "product", params: { id } });
+};
+</script>
+
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
     <div
-      @click="router.push(`/product/${product.id}`)"
+      @click="goToProductDetail(product.id)"
       class="product shadow-md border-2 p-2"
       v-for="product in store.products"
       :key="product.id"
